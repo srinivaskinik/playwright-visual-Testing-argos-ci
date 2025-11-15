@@ -1,0 +1,12 @@
+{
+  "name": "playwright-pom-visual-demo",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@argos-ci/cli": "^1.7.1",
+    "@playwright/test": "^1.44.0",
+    "typescript": "^5.0.0"
+  }
+}
