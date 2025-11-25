@@ -1,23 +1,16 @@
-import { test } from '@playwright/test';
-import { TodoPage } from '../pages/todoPage';
+import { test, expect } from '@playwright/test';
 
-test.describe('Visual Change Demo', () => {
-  test('modified UI screenshot', async ({ page }) => {
-    const todo = new TodoPage(page);
+test('local visual regression check', async ({ page }) => {
+  await page.goto('https://demo.playwright.dev/todomvc/#/');
 
-    await todo.goto();
+  // Simulated UI change
+  // await page.addStyleTag({
+  //   content: `
+  //     h1 { color: blue !important; }
+  //     .new-todo { border: 2px solid blue !important; }
+  //   `
+  // });
 
-    await page.addStyleTag({
-      content: `
-        h1 {
-          color: red !important;
-        }
-        .new-todo {
-          border: 3px solid red !important;
-        }
-      `
-    });
-
-    await todo.takeScreenshot('baseline-homepage.png');
-  });
+  // This will fail locally if UI differs
+  await expect(page).toHaveScreenshot('homepage.png');
 });
