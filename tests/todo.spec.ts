@@ -6,7 +6,7 @@ test.describe('Todo App - Baseline Visuals', () => {
     const todo = new TodoPage(page);
 
     await todo.goto();
-    await todo.takeScreenshot('baseline-homepage.png');
+    //await todo.takeScreenshot('baseline-homepage.png');
   });
 
   test('@visual @snapshot add todo item', async ({ page }) => {
@@ -17,6 +17,6 @@ test.describe('Todo App - Baseline Visuals', () => {
     await todo.addTodo('Walk the dog');
     await todo.expectTodoCount(2);
 
-    await todo.takeScreenshot('after-adding-todo.png');
+   // await todo.takeScreenshot('after-adding-todo.png');
   });
 });
