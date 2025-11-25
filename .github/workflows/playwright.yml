@@ -24,9 +24,12 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Install Argos CLI
+        run: npm install @argos-ci/cli
 
       - name: Run Visual Tests (Generate Snapshots)
         run: npx playwright test --update-snapshots
+      
 
       - name: Upload Playwright Report (Artifact)
         if: always()
