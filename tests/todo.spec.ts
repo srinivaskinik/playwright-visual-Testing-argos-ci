@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { TodoPage } from '../pages/todoPage';
 
 test.describe('Todo App - Baseline Visuals', () => {
-  test(' baseline screenshot', async ({ page }) => {
+  test('@visual @snapshot baseline screenshot', async ({ page }) => {
     const todo = new TodoPage(page);
 
     await todo.goto();
