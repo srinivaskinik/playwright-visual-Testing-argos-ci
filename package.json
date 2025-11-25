@@ -7,6 +7,6 @@
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "typescript": "^5.0.0",
-    "@argos-ci/cli": "^1.7.1"
+    "@argos-ci/core": "^1.3.0"
   }
 }
