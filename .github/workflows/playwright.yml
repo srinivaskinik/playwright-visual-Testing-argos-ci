@@ -27,8 +27,11 @@ jobs:
       - name: Install Argos CLI
         run: npm install @argos-ci/cli
 
-      - name: Run Visual Tests (Generate Snapshots)
-        run: npx playwright test --update-snapshots
+      - name: Run Functional Tests (skip visual snapshots)
+        run: npx playwright test --grep-invert "@visual"
+
+      - name: Run Visual Tests (no Playwright snapshots)
+        run: npx playwright test --grep "@visual" --update-snapshots
       
 
       - name: Upload Playwright Report (Artifact)
