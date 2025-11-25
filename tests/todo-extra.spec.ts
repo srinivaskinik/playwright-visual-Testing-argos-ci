@@ -1,36 +1,53 @@
-name: Visual Regression with Playwright + Argos
+import { test, expect } from '@playwright/test';
+import { TodoPage } from '../pages/todoPage';
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
-  pull_request:
+test.describe('Todo App - Additional Test Scenarios', () => {
+  test.beforeEach(async ({ page }) => {
+    const todo = new TodoPage(page);
+    await todo.goto();
+  });
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+  test('@visual mark todo as completed', async ({ page }) => {
+    const todo = new TodoPage(page);
+    await todo.addTodo('Buy milk');
+    await todo.toggleTodo('Buy milk');
+    await todo.expectCompletedCount(1);
+  });
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  test('@visual clear completed todos', async ({ page }) => {
+    const todo = new TodoPage(page);
+    await todo.addTodo('Walk dog');
+    await todo.toggleTodo('Walk dog');
+    await todo.clearCompleted();
+    await todo.expectTodoCount(0);
+  });
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+  test('@visual edit an existing todo', async ({ page }) => {
+    const todo = new TodoPage(page);
+    await todo.addTodo('Write todo');
+    await todo.editTodo('Write todo', 'Write next day plans');
+    await todo.expectTodoLabelExists('Write next day plans');
+  });
 
-      - name: Install Dependencies
-        run: npm ci
+  test('@visual delete a todo', async ({ page }) => {
+    const todo = new TodoPage(page);
+    await todo.addTodo('Clean room');
+    await todo.deleteTodo('Clean room');
+    await todo.expectTodoCount(0);
+  });
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+  test('filter active and completed todos', async ({ page }) => {
+    const todo = new TodoPage(page);
+    await todo.addTodo('Task 1');
+    await todo.addTodo('Task 2');
+    await todo.toggleTodo('Task 1'); // complete first
 
-      # 🚫 Do NOT update snapshots in CI — Argos handles comparison
-      - name: Run Playwright Tests (without snapshots)
-        run: npx playwright test --grep "@visual" --reporter=line
+    await todo.filter('Active');
+    await todo.expectTodoVisible('Task 2');
+    await todo.expectTodoNotVisible('Task 1');
 
-      # 🚀 Upload screenshots to Argos for comparison
-      - name: Upload to Argos CI
-        run: npx argos upload tests
-        env:
-          ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
+    await todo.filter('Completed');
+    await todo.expectTodoVisible('Task 1');
+    await todo.expectTodoNotVisible('Task 2');
+  });
+});
