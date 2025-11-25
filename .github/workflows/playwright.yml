@@ -1,44 +1,49 @@
-name: Playwright + Argos Visual Regression
+name: Visual Tests (Argos Only)
 
 on:
-  workflow_dispatch:   # Allow manual trigger
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  non_visual_tests:
+  visual-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - run: npm ci
-      - run: npx playwright install --with-deps
-
-      # Run only tests WITHOUT snapshots
-      - name: Run Non-Visual Tests
+      - name: Install deps
+        run: |
+          npm install
+          npx playwright install --with-deps
+      
+      ############################################################
+      # 🧃 STEP 1 — RUN PLAYWRIGHT TESTS (excluding snapshot tests)
+      ############################################################
+      # Anything tagged with @snapshot will NOT run
+      ############################################################
+      - name: Run Playwright tests (WITHOUT snapshots)
         run: npx playwright test --grep-invert "@snapshot"
 
-  argos_visual_tests:
-    runs-on: ubuntu-latest
-    needs: non_visual_tests
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      ############################################################
+      # 🧃 STEP 2 — RUN Argos visual tests ONLY
+      ############################################################
+      # @visual tests are the ones designed for Argos screenshots
+      ############################################################
+      - name: Run Argos visual tests
+        run: npx playwright test --grep "@visual"
 
-      - run: npm ci
-      - run: npx playwright install --with-deps
-
-      # Run only Argos visual tests
-      - name: Run Argos Visual Tests
-        run: npx playwright test --grep "@argos"
-
-      - name: Upload Screenshots to Argos CI
-        run: npx argos upload tests/screenshots
+      ############################################################
+      # 🧃 STEP 3 — Upload ONLY Argos test screenshots
+      ############################################################
+      - name: Upload screenshots to Argos CI
+        run: npx argos upload tests
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
