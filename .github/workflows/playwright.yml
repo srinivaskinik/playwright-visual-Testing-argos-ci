@@ -7,42 +7,38 @@ on:
   pull_request:
 
 jobs:
-  test:
+  non_visual_tests:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install Dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npx playwright install --with-deps
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Install Argos CLI
-        run: npm install @argos-ci/cli
-
-      - name: Run Functional Tests (skip visual snapshots)
-        run: npx playwright test --grep-invert "@visual"
-
-      - name: Run Visual Tests (no Playwright snapshots)
+      # Run only tests WITHOUT snapshots
+      - name: Run Non-Visual Tests
         run: npx playwright test --grep-invert "@snapshot"
-      
 
-      - name: Upload Playwright Report (Artifact)
-        if: always()
-        uses: actions/upload-artifact@v4
+  argos_visual_tests:
+    runs-on: ubuntu-latest
+    needs: non_visual_tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          name: playwright-report
-          path: playwright-report/
+          node-version: 18
+
+      - run: npm ci
+      - run: npx playwright install --with-deps
+
+      # Run only Argos visual tests
+      - name: Run Argos Visual Tests
+        run: npx playwright test --grep "@argos"
 
       - name: Upload Screenshots to Argos CI
-        if: always()
-        run: npx argos upload tests
+        run: npx argos upload tests/screenshots
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
