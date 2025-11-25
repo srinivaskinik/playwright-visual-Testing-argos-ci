@@ -7,14 +7,14 @@ test.describe('Todo App - Additional Test Scenarios', () => {
     await todo.goto();
   });
 
-  test('mark todo as completed', async ({ page }) => {
+  test('@snapshot @visual mark todo as completed', async ({ page }) => {
     const todo = new TodoPage(page);
     await todo.addTodo('Buy milk');
     await todo.toggleTodo('Buy milk');
     await todo.expectCompletedCount(1);
   });
 
-  test('clear completed todos', async ({ page }) => {
+  test('@snapshot @visual clear completed todos', async ({ page }) => {
     const todo = new TodoPage(page);
     await todo.addTodo('Walk dog');
     await todo.toggleTodo('Walk dog');
@@ -22,21 +22,21 @@ test.describe('Todo App - Additional Test Scenarios', () => {
     await todo.expectTodoCount(0);
   });
 
-  test('edit an existing todo', async ({ page }) => {
+  test('@snapshot @visual edit an existing todo', async ({ page }) => {
     const todo = new TodoPage(page);
     await todo.addTodo('Write todo');
     await todo.editTodo('Write todo', 'Write next day plans');
     await todo.expectTodoLabelExists('Write next day plans');
   });
 
-  test('delete a todo', async ({ page }) => {
+  test('@snapshot @visual delete a todo', async ({ page }) => {
     const todo = new TodoPage(page);
     await todo.addTodo('Clean room');
     await todo.deleteTodo('Clean room');
     await todo.expectTodoCount(0);
   });
 
-  test('filter active and completed todos', async ({ page }) => {
+  test('@snapshot @visual filter active and completed todos', async ({ page }) => {
     const todo = new TodoPage(page);
     await todo.addTodo('Task 1');
     await todo.addTodo('Task 2');
