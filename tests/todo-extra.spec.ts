@@ -1,53 +1,31 @@
-import { test, expect } from '@playwright/test';
-import { TodoPage } from '../pages/todoPage';
+name: Visual Testing with Argos
 
-test.describe('Todo App - Additional Test Scenarios', () => {
-  test.beforeEach(async ({ page }) => {
-    const todo = new TodoPage(page);
-    await todo.goto();
-  });
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
 
-  test('@visual mark todo as completed', async ({ page }) => {
-    const todo = new TodoPage(page);
-    await todo.addTodo('Buy milk');
-    await todo.toggleTodo('Buy milk');
-    await todo.expectCompletedCount(1);
-  });
+jobs:
+  visual-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-  test('@visual clear completed todos', async ({ page }) => {
-    const todo = new TodoPage(page);
-    await todo.addTodo('Walk dog');
-    await todo.toggleTodo('Walk dog');
-    await todo.clearCompleted();
-    await todo.expectTodoCount(0);
-  });
+      - name: Install dependencies
+        run: npm ci
 
-  test('@visual edit an existing todo', async ({ page }) => {
-    const todo = new TodoPage(page);
-    await todo.addTodo('Write todo');
-    await todo.editTodo('Write todo', 'Write next day plans');
-    await todo.expectTodoLabelExists('Write next day plans');
-  });
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
-  test('@visual delete a todo', async ({ page }) => {
-    const todo = new TodoPage(page);
-    await todo.addTodo('Clean room');
-    await todo.deleteTodo('Clean room');
-    await todo.expectTodoCount(0);
-  });
+      # IMPORTANT: Run only NON-snapshot tests in CI
+      - name: Run Playwright tests excluding local snapshot tests
+        run: npx playwright test --grep-invert @snapshot
 
-  test('@visual filter active and completed todos', async ({ page }) => {
-    const todo = new TodoPage(page);
-    await todo.addTodo('Task 1');
-    await todo.addTodo('Task 2');
-    await todo.toggleTodo('Task 1'); // complete first
-
-    await todo.filter('Active');
-    await todo.expectTodoVisible('Task 2');
-    await todo.expectTodoNotVisible('Task 1');
-
-    await todo.filter('Completed');
-    await todo.expectTodoVisible('Task 1');
-    await todo.expectTodoNotVisible('Task 2');
-  });
-});
+      - name: Upload visual results to Argos CI
+        run: npx argos upload ./tests
+        env:
+          ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
