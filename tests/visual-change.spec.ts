@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('local visual regression check', async ({ page }) => {
+test('@visual @snapshot local visual regression check', async ({ page }) => {
   await page.goto('https://demo.playwright.dev/todomvc/#/');
 
 
