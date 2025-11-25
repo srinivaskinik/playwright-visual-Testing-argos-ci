@@ -9,7 +9,7 @@ test.describe('Todo App - Baseline Visuals', () => {
     await todo.takeScreenshot('baseline-homepage.png');
   });
 
-  test('add todo item', async ({ page }) => {
+  test('@visual @snapshot add todo item', async ({ page }) => {
     const todo = new TodoPage(page);
 
     await todo.goto();
