@@ -2,14 +2,14 @@ import { test } from '@playwright/test';
 import { TodoPage } from '../pages/todoPage';
 
 test.describe('Todo App - Baseline Visuals', () => {
-  test('@snapshot @visual baseline screenshot', async ({ page }) => {
+  test(' baseline screenshot', async ({ page }) => {
     const todo = new TodoPage(page);
 
     await todo.goto();
     await todo.takeScreenshot('baseline-homepage.png');
   });
 
-  test('@snapshot @visual add todo item', async ({ page }) => {
+  test('add todo item', async ({ page }) => {
     const todo = new TodoPage(page);
 
     await todo.goto();
