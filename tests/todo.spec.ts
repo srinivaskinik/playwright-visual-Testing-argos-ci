@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 import { TodoPage } from '../pages/todoPage';
+import { argosScreenshot } from '@argos-ci/playwright';
 
 test.describe('Todo App - Baseline Visuals', () => {
   test('@visual @snapshot baseline screenshot', async ({ page }) => {
@@ -7,6 +8,7 @@ test.describe('Todo App - Baseline Visuals', () => {
 
     await todo.goto();
     //await todo.takeScreenshot('baseline-homepage.png');
+    await argosScreenshot(page, 'baseline-homepage');
   });
 
   test('@visual @snapshot add todo item', async ({ page }) => {
@@ -18,5 +20,6 @@ test.describe('Todo App - Baseline Visuals', () => {
     await todo.expectTodoCount(2);
 
    // await todo.takeScreenshot('after-adding-todo.png');
+    await argosScreenshot(page, 'after-adding-todo');
   });
 });
