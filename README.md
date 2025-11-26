@@ -33,57 +33,85 @@ It is a minimal, production-style setup designed to help you onboard quickly wit
   "@playwright/test": "^1.44.0",
   "typescript": "^5.0.0"
 }
-✅ Project Setup
-1️⃣ Install dependencies
+```
+
+---
+
+## ✅ Project Setup
+
+### 1️⃣ Install dependencies
+```bash
 npm install
+```
 
-2️⃣ Install Playwright browsers
+### 2️⃣ Install Playwright browsers
+```bash
 npx playwright install
+```
 
-✅ Running Tests Locally
+---
+
+## ✅ Running Tests Locally
 
 Run all tests:
 
+```bash
 npm test
-
+```
 
 Run only visual tests:
 
+```bash
 npx playwright test --grep "@visual"
-
+```
 
 Run all others:
 
+```bash
 npx playwright test --grep-invert "@visual"
+```
 
-✅ Argos Visual Snapshot
+---
+
+## ✅ Argos Visual Snapshot
 
 In your visual test:
 
+```ts
 import { argosScreenshot } from "@argos-ci/playwright";
 
 await argosScreenshot(page, "Home Page");
+```
 
-📁 Where Screenshots Are Stored
+---
+
+## 📁 Where Screenshots Are Stored
 
 By default, Argos snapshots are written to:
 
+```
 ./screenshots
-
+```
 
 If you want to explicitly control output path:
 
+```ts
 await argosScreenshot(page, "Login Page", { root: ".argos" });
-
+```
 
 Then upload from:
 
+```bash
 npx argos upload .argos
+```
 
-✅ CI Configuration (GitHub Actions)
+---
+
+## ✅ CI Configuration (GitHub Actions)
 
 Example upload step:
 
+```yaml
 - name: Upload to Argos
   run: npx argos upload ./screenshots
   env:
@@ -91,72 +119,95 @@ Example upload step:
     ARGOS_BRANCH: ${{ github.ref_name }}
     ARGOS_COMMIT: ${{ github.sha }}
     ARGOS_BUILD_NAME: "Playwright Visual Tests"
+```
 
-🔐 Add GitHub Secret
+---
+
+## 🔐 Add GitHub Secret
 
 Go to:
 
+```
 GitHub → Settings → Secrets → Actions → New Secret
-
+```
 
 Add:
 
+```
 ARGOS_TOKEN
-
+```
 
 (Available from your Argos dashboard)
 
-✅ Approving Baselines
+---
+
+## ✅ Approving Baselines
 
 After first run:
 
-Visit Argos Dashboard
+1. Visit Argos Dashboard
+2. Review screenshots
+3. Approve baseline
+4. Future diffs will highlight regressions
 
-Review screenshots
+---
 
-Approve baseline
-
-Future diffs will highlight regressions
-
-🧪 Example Tagging
+## 🧪 Example Tagging
 
 To separate visual tests:
 
+```ts
 test("@visual homepage", async ({ page }) => { ... });
+```
 
-✅ Best Practices
+---
 
-✔ Use fixed viewport
-✔ Disable animations
-✔ Unique screenshot names
-✔ Separate @visual tests
-✔ Run visual tests last
-✔ Upload only snapshot folder
+## ✅ Best Practices
 
-🧠 Common Issues
-.argos not found
+✔ Use fixed viewport  
+✔ Disable animations  
+✔ Unique screenshot names  
+✔ Separate @visual tests  
+✔ Run visual tests last  
+✔ Upload only snapshot folder  
 
-✅ You didn’t configure root → default is ./screenshots
+---
 
-Upload fails
+## 🧠 Common Issues
 
-✅ Check token
-✅ Upload correct directory
+### `.argos not found`
+✅ You didn’t configure root → default is `./screenshots`
+
+### Upload fails
+✅ Check token  
+✅ Upload correct directory  
 ✅ Verify screenshots exist
 
-Empty Argos build
-
-✅ Tests didn’t execute
-✅ Wrong @grep
+### Empty Argos build
+✅ Tests didn’t execute  
+✅ Wrong @grep  
 ✅ Missing screenshot call
 
-✅ Project Scripts
-npm test
+---
 
-📣 Want to commit improvements?
+## ✅ Project Scripts
+
+```bash
+npm test
+```
+
+---
+
+## 📣 Want to contribute?
 
 Pull requests are welcome!
 
-📄 License
+---
+
+## 📄 License
 
 MIT
+
+---
+
+## ⭐ If this helped you, star the repo!
