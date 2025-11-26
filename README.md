@@ -1,86 +1,162 @@
-# Playwright POM Visual Regression Demo
+# 🎭 Playwright + Argos CI — Visual Testing Demo (POM)
 
-## 🚀 Overview
-This sample project demonstrates:
-- Playwright end-to-end testing
-- Page Object Model (POM)
-- Visual Regression Testing
-- GitHub Actions CI
-- Argos CI Screenshot Comparison
+This repository demonstrates how to implement **Visual Regression Testing** using:
 
-Perfect for demos, training, and showing before/after UI changes.
+- ✅ Playwright
+- ✅ Page Object Model (POM)
+- ✅ Argos CI for Visual Testing
+- ✅ GitHub Actions for CI automation
 
----
-
-## 📁 Project Structure
-```
-playwright-pom-visual-demo/
-├── package.json
-├── playwright.config.ts
-├── tsconfig.json
-├── tests/
-│   ├── todo.spec.ts
-│   └── visual-change.spec.ts
-├── pages/
-│   └── todoPage.ts
-└── .github/
-    └── workflows/
-        └── playwright.yml
-```
+It is a minimal, production-style setup designed to help you onboard quickly with Argos visual testing on Playwright.
 
 ---
 
-## 🛠️ Setup Instructions
+## 🚀 Tech Stack
 
-### 1. Install Dependencies
-```bash
+| Tool | Purpose |
+|------|--------|
+| Playwright | Test automation framework |
+| Argos CI | Visual regression platform |
+| POM | Test structure and abstraction |
+| GitHub Actions | CI pipeline |
+| TypeScript | Type safety |
+
+---
+
+## 📦 Installed Dependencies
+
+```json
+{
+  "@argos-ci/cli": "^3.2.1",
+  "@argos-ci/core": "^1.3.0",
+  "@argos-ci/playwright": "^6.3.3",
+  "@playwright/test": "^1.44.0",
+  "typescript": "^5.0.0"
+}
+✅ Project Setup
+1️⃣ Install dependencies
 npm install
-npx playwright install --with-deps
-```
 
-### 2. Run Tests Locally
-```bash
-npx playwright test
-```
+2️⃣ Install Playwright browsers
+npx playwright install
 
----
+✅ Running Tests Locally
 
-## 🔍 Visual Regression Demo Steps
+Run all tests:
 
-### Baseline Run
-- `todo.spec.ts` captures baseline screenshots
-- Argos saves them as the initial baseline
+npm test
 
-### Visual Change Run
-`visual-change.spec.ts` injects CSS:
-```css
-h1 { color: red !important }
-.new-todo { border: 3px solid red !important }
-```
 
-This intentionally creates a visual difference so Argos can detect it.
+Run only visual tests:
 
----
+npx playwright test --grep "@visual"
 
-## ☁️ GitHub Actions CI
-Workflow file: `.github/workflows/playwright.yml`
 
-Automatically runs:
-- Playwright tests
-- Uploads screenshots to Argos
+Run all others:
 
----
+npx playwright test --grep-invert "@visual"
 
-## 🖼️ Argos CI
-Create an Argos project and add:
-- `ARGOS_TOKEN` as a GitHub repository secret
+✅ Argos Visual Snapshot
 
----
+In your visual test:
 
-## 📦 Zip Download
-Included below in ChatGPT message (scroll down).
+import { argosScreenshot } from "@argos-ci/playwright";
 
----
+await argosScreenshot(page, "Home Page");
 
-## 📜 License
-MIT License
+📁 Where Screenshots Are Stored
+
+By default, Argos snapshots are written to:
+
+./screenshots
+
+
+If you want to explicitly control output path:
+
+await argosScreenshot(page, "Login Page", { root: ".argos" });
+
+
+Then upload from:
+
+npx argos upload .argos
+
+✅ CI Configuration (GitHub Actions)
+
+Example upload step:
+
+- name: Upload to Argos
+  run: npx argos upload ./screenshots
+  env:
+    ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
+    ARGOS_BRANCH: ${{ github.ref_name }}
+    ARGOS_COMMIT: ${{ github.sha }}
+    ARGOS_BUILD_NAME: "Playwright Visual Tests"
+
+🔐 Add GitHub Secret
+
+Go to:
+
+GitHub → Settings → Secrets → Actions → New Secret
+
+
+Add:
+
+ARGOS_TOKEN
+
+
+(Available from your Argos dashboard)
+
+✅ Approving Baselines
+
+After first run:
+
+Visit Argos Dashboard
+
+Review screenshots
+
+Approve baseline
+
+Future diffs will highlight regressions
+
+🧪 Example Tagging
+
+To separate visual tests:
+
+test("@visual homepage", async ({ page }) => { ... });
+
+✅ Best Practices
+
+✔ Use fixed viewport
+✔ Disable animations
+✔ Unique screenshot names
+✔ Separate @visual tests
+✔ Run visual tests last
+✔ Upload only snapshot folder
+
+🧠 Common Issues
+.argos not found
+
+✅ You didn’t configure root → default is ./screenshots
+
+Upload fails
+
+✅ Check token
+✅ Upload correct directory
+✅ Verify screenshots exist
+
+Empty Argos build
+
+✅ Tests didn’t execute
+✅ Wrong @grep
+✅ Missing screenshot call
+
+✅ Project Scripts
+npm test
+
+📣 Want to commit improvements?
+
+Pull requests are welcome!
+
+📄 License
+
+MIT
