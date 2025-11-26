@@ -37,6 +37,25 @@ jobs:
       ############################################################
       - name: Run Argos visual tests
         run: npx playwright test --grep "@visual"
+      - name: Debug Argos folder
+        run: |
+          echo "=============================="
+          echo "Listing .argos directory"
+          echo "=============================="
+          if [ -d ".argos" ]; then
+            ls -R .argos
+          else
+            echo "❌ .argos folder NOT FOUND"
+          fi
+
+          echo "=============================="
+          echo "Listing test-results directory"
+          echo "=============================="
+          if [ -d "test-results" ]; then
+            ls -R test-results
+          else
+            echo "❌ test-results folder NOT FOUND"
+          fi
 
       ############################################################
       # 🧃 STEP 3 — UPLOAD SNAPSHOTS TO ARGOS
