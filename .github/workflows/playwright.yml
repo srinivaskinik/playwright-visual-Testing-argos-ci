@@ -42,7 +42,7 @@ jobs:
       # 🧃 STEP 3 — UPLOAD SNAPSHOTS TO ARGOS
       ############################################################
       - name: Upload screenshots to Argos CI
-        run: npx argos upload .argos test-results
+        run: npx argos upload .argos
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
           ARGOS_BRANCH: ${{ github.head_ref || github.ref_name }}
