@@ -40,12 +40,12 @@ jobs:
       - name: Debug Argos folder
         run: |
           echo "=============================="
-          echo "Listing .argos directory"
+          echo "Listing .screenshots directory"
           echo "=============================="
-          if [ -d ".argos" ]; then
-            ls -R .argos
+          if [ -d ".screenshots" ]; then
+            ls -R .screenshots
           else
-            echo "❌ .argos folder NOT FOUND"
+            echo "❌ .screenshots folder NOT FOUND"
           fi
 
           echo "=============================="
@@ -61,7 +61,7 @@ jobs:
       # 🧃 STEP 3 — UPLOAD SNAPSHOTS TO ARGOS
       ############################################################
       - name: Upload screenshots to Argos CI
-        run: npx argos upload .argos
+        run: npx argos upload ./screenshots
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
           ARGOS_BRANCH: ${{ github.head_ref || github.ref_name }}
