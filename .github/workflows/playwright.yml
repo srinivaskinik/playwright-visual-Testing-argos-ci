@@ -25,27 +25,26 @@ jobs:
           npm install --save-dev @argos-ci/cli
           npm install --save-dev @argos-ci/playwright
           npx playwright install --with-deps
-      
-      ############################################################
-      # 🧃 STEP 1 — RUN PLAYWRIGHT TESTS (excluding snapshot tests)
-      ############################################################
-      # Anything tagged with @snapshot will NOT run
-      ############################################################
-      - name: Run Playwright tests (WITHOUT snapshots)
-        run: npx playwright test --grep-invert "@snapshot"
 
       ############################################################
-      # 🧃 STEP 2 — RUN Argos visual tests ONLY
+      # 🧃 STEP 1 — RUN NON-VISUAL TESTS
       ############################################################
-      # @visual tests are the ones designed for Argos screenshots
+      - name: Run Playwright tests (WITHOUT snapshots)
+        run: npx playwright test --grep-invert "@visual"
+
+      ############################################################
+      # 🧃 STEP 2 — RUN ARGOS VISUAL TESTS ONLY
       ############################################################
       - name: Run Argos visual tests
         run: npx playwright test --grep "@visual"
 
       ############################################################
-      # 🧃 STEP 3 — Upload ONLY Argos test screenshots
+      # 🧃 STEP 3 — UPLOAD SNAPSHOTS TO ARGOS
       ############################################################
       - name: Upload screenshots to Argos CI
-        run: npx argos upload tests
+        run: npx argos upload .argos test-results
         env:
           ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
+          ARGOS_BRANCH: ${{ github.head_ref || github.ref_name }}
+          ARGOS_COMMIT: ${{ github.sha }}
+          ARGOS_BUILD_NAME: "Playwright Visual Tests"
